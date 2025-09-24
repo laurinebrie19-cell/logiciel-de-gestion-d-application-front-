@@ -1,0 +1,32 @@
+export const usersData = [
+  {
+    id: 1,
+    name: "Alice Dupont",
+    email: "alice@mutuelle.com",
+    phone: "+33 6 12 34 56 78",
+    role: "admin",
+    status: "active",
+    createdAt: "2023-10-01",
+    avatar: "https://i.pravatar.cc/150?img=1",
+  },
+  {
+    id: 2,
+    name: "Bob Martin",
+    email: "bob@mutuelle.com",
+    phone: "+33 6 23 45 67 89",
+    role: "trésorier",
+    status: "active",
+    createdAt: "2023-09-15",
+    avatar: "https://i.pravatar.cc/150?img=2",
+  },
+  {
+    id: 3,
+    name: "Charlie Dubois",
+    email: "charlie@mutuelle.com",
+    phone: "+33 6 34 56 78 90",
+    role: "membre",
+    status: "inactive",
+    createdAt: "2023-08-20",
+    avatar: "https://i.pravatar.cc/150?img=3",
+  },
+];
