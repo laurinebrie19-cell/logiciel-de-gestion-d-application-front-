@@ -19,6 +19,7 @@ import {
   Shield,
   FileText,
   Building2,
+  Calendar,
 } from "lucide-react";
 
 const navItems = [
@@ -44,6 +45,12 @@ const navItems = [
         icon: Users,
         requiredPermission: "USER_UPDATE",
       },
+      {
+        path: "/emploi-du-temps",
+        label: "Emploi du temps",
+        icon: Calendar,
+        requiredPermission: "USER_READ",
+      },
      
      
       {
@@ -60,12 +67,27 @@ const navItems = [
     icon: Shield,
     items: [
      
-     
+     /*
       {
         path: "/admin/fonctions-bureau",
         label: "Fonctions du Bureau",
         icon: Building2,
         requiredPermission: "BUREAU_MANAGE",
+      },*/
+     
+      {
+        path: "/admin/roles",
+        label: "Paramètres Rôles",
+        icon: Settings,
+        requiredPermission: "USER_MANAGE_ROLES",
+      },
+     
+
+      {
+        path: "/admin/annonces",
+        label: "Gestion des Annonces",
+        icon: FileText,
+        requiredPermission: "USER_MANAGE_ROLES",
       },
       {
         path: "/admin/academique",

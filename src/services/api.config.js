@@ -16,4 +16,9 @@ export const apiConfig = {
   user: "http://localhost:8066/users",
   role: "http://localhost:8066/roles",
   auth: "http://localhost:8066/api/auth",
+  emploiDuTemps: "http://localhost:8066/api/emplois-du-temps",
+  salle: "http://localhost:8066/api/salles",
+  categorieAnnonce: "http://localhost:8066/api/categories-annonce",
+  typeAnnonce: "http://localhost:8066/api/types-annonce",
+  annonce: "http://localhost:8066/api/annonces"
 };

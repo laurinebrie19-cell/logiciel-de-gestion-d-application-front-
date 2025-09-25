@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "../pages/Auth/Login.jsx";
 import MainLayout from "../layouts/MainLayouts";
 import Dashboard from "../pages/Dashboard/DahboardPage/Dashboard";
+import EmploiDuTemps from "../pages/EmploiDuTemps/EmploiDuTemps";
 import UserList from "../pages/TestUser/UserList";
 import UserForm from "../pages/TestUser/UserForm";
 import UserDetails from "../pages/TestUser/UserDetails";
@@ -24,6 +25,7 @@ import ResetPassword from "../pages/Auth/ResetPassword";
 import FonctionBureauList  from "../pages/Parametrage/FonctionBureau/FonctionBureauList";
 import FonctionBureauForm from "../pages/Parametrage/FonctionBureau/FonctionBureauForm";
 import ParametrageAcademique from "../pages/Parametrage/Academique/ParametrageAcademique.jsx";
+import AnnonceManager from "../pages/Dashboard/Annonce/AnnonceManager";
 
 const router = createBrowserRouter([
   {
@@ -148,10 +150,26 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "admin/annonces",
+        element: (
+          <PrivateRoute permission="USER_MANAGE_ROLES">
+            <AnnonceManager />
+          </PrivateRoute>
+        ),
+      },
+      {
         path: "admin/academique",
         element: (
           <PrivateRoute permission="USER_MANAGE_ROLES">
             <ParametrageAcademique />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "emploi-du-temps",
+        element: (
+          <PrivateRoute permission="USER_READ">
+            <EmploiDuTemps />
           </PrivateRoute>
         ),
       },
