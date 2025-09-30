@@ -102,4 +102,33 @@ export const annonceService = {
       throw error;
     }
   },
+
+  getFilteredAnnonces: async (typeId, categoryId) => {
+    try {
+      let url = "/active"; // Fallback to active annonces
+      
+      if (typeId !== 'all' && categoryId !== 'all') {
+        // Le backend ne supportant pas le filtrage combiné, on filtre d'abord par type
+        // puis on filtrera par catégorie côté client dans le composant.
+        url = `/type/${typeId}`;
+      } else if (typeId !== 'all') {
+        url = `/type/${typeId}`;
+      } else if (categoryId !== 'all') {
+        url = `/category/${categoryId}`;
+      }
+      
+      const response = await annonceApi.get(url);
+      let annonces = Array.isArray(response.data) ? response.data : [];
+
+      // Si les deux filtres sont actifs, on applique le second filtre ici.
+      if (typeId !== 'all' && categoryId !== 'all') {
+        annonces = annonces.filter(annonce => annonce.categorieAnnonce?.id.toString() === categoryId);
+      }
+
+      return annonces;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des annonces filtrées:", error);
+      throw error;
+    }
+  }
 };

@@ -15,6 +15,7 @@ export const apiConfig = {
   fonctionBureau: "http://localhost:8066/api/fonctions-bureau",
   user: "http://localhost:8066/users",
   role: "http://localhost:8066/roles",
+  permission: "http://localhost:8066/permissions",
   auth: "http://localhost:8066/api/auth",
   emploiDuTemps: "http://localhost:8066/api/emplois-du-temps",
   salle: "http://localhost:8066/api/salles",

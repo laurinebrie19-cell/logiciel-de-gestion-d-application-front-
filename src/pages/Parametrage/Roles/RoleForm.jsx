@@ -43,18 +43,19 @@ const RoleForm = () => {
     useEffect(() => {
         const fetchPermissions = async () => {
             try {
+                setLoading(true);
                 const response = await getAllPermissions();
-                if (!response) {
+                if (!response || !Array.isArray(response) || response.length === 0) {
                     throw new Error("Aucune permission disponible");
                 }
                 setPermissions(response);
+                console.log("Permissions chargées:", response); // Pour le débogage
             } catch (error) {
                 console.error("Erreur de chargement des permissions:", error);
-                setToastState({
-                    show: true,
-                    message: error.message || "Erreur de chargement des permissions",
-                    type: "error",
-                });
+                toast.error(error.message || "Erreur de chargement des permissions");
+                setPermissions([]);
+            } finally {
+                setLoading(false);
             }
         };
         fetchPermissions();

@@ -16,7 +16,7 @@ export const Features = () => {
   {
     id: 2,
     title: "Encadrement Personnalisé",
-    description: "Un suivi individuel pour garantir votre réussite dans votre parcours d&apos;apprentissage",
+    description: "Un suivi individuel pour garantir votre réussite dans votre parcours d'apprentissage",
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
@@ -49,7 +49,7 @@ export const Features = () => {
   {
     id: 5,
     title: "Stage Garanti",
-    description: "Bénéficiez d&apos;une expérience pratique grâce à nos partenariats entreprises",
+    description: "Bénéficiez d'une expérience pratique grâce à nos partenariats entreprises",
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
@@ -60,7 +60,7 @@ export const Features = () => {
   {
     id: 6,
     title: "Campus Moderne",
-    description: "Un environnement d&apos;apprentissage équipé des dernières technologies",
+    description: "Un environnement d'apprentissage équipé des dernières technologies",
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 

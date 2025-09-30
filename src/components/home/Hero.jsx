@@ -34,8 +34,8 @@ export const Hero = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="mt-6 text-lg leading-8 text-[#94a3b8]"
           >
-            AL Infotech Academy vous offre une formation d&apos;excellence pour devenir 
-            un professionnel reconnu dans les métiers de l&apos;informatique. Rejoignez 
+            AL Infotech Academy vous offre une formation d'excellence pour devenir 
+            un professionnel reconnu dans les métiers de l'informatique. Rejoignez 
             une communauté dynamique et construisez votre carrière avec nous.
           </motion.p>
 
@@ -46,7 +46,7 @@ export const Hero = () => {
             className="mt-10 flex items-center justify-center gap-x-6"
           >
             <Link
-              to="/auth/login"
+              to="/login"
               className="rounded-lg bg-[#0ea5e9] px-8 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-[#0284c7] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0ea5e9] transition-all"
             >
               Commencer maintenant

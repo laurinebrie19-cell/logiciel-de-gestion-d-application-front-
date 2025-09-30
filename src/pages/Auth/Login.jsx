@@ -111,7 +111,7 @@ const LoginPage = () => {
             <h2 className="text-2xl font-bold text-indigo-100 mb-2">
               Connexion à votre compte
             </h2>
-            <p className="text-indigo-100">Accédez à votre espace mutuelle</p>
+            <p className="text-indigo-100">Accédez à votre espace Scolaire</p>
           </div>
 
           {/* Form */}

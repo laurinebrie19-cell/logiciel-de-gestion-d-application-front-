@@ -11,7 +11,6 @@ import { HomePage } from "../pages/HomePage/HomePage";
 import { BlogPage } from "../pages/Blog/BlogPage";
 import { BlogPostDetail } from "../pages/Blog/BlogPostDetail";
 
-import Settings from "../pages/Parametrage/Emprunt/LoanSettings";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import UnauthorizedPage from "../pages/Unautorized/Unauthorized";
@@ -19,13 +18,13 @@ import NotFound from "../pages/NotFound/NotFoundPage";
 import RoleList from "../pages/Parametrage/Roles/RoleList.jsx";
 import RoleForm from "../pages/Parametrage/Roles/RoleForm.jsx";
 import Notification from "../pages/Parametrage/Notification/SettingsPage.jsx";
-import ReportHeaderConfig from "../pages/Parametrage/Configuration/ReportHeaderConfig";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import ResetPassword from "../pages/Auth/ResetPassword";
 import FonctionBureauList  from "../pages/Parametrage/FonctionBureau/FonctionBureauList";
 import FonctionBureauForm from "../pages/Parametrage/FonctionBureau/FonctionBureauForm";
 import ParametrageAcademique from "../pages/Parametrage/Academique/ParametrageAcademique.jsx";
 import AnnonceManager from "../pages/Dashboard/Annonce/AnnonceManager";
+import MesNiveaux from "../pages/Enseignant/MesNiveaux";
 
 const router = createBrowserRouter([
   {
@@ -95,7 +94,7 @@ const router = createBrowserRouter([
       {
         path: "etudiants/*",
         element: (
-          <PrivateRoute permission="USER_READ">
+          <PrivateRoute permission="ETUDIANT_READ">
             <EtudiantsPage />
           </PrivateRoute>
         ),
@@ -132,19 +131,10 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-     
-      {
-        path: "admin/settings",
-        element: (
-          <PrivateRoute permission="SESSION_MANAGE_BALANCE">
-            <Settings />
-          </PrivateRoute>
-        ),
-      },
       {
         path: "admin/roles",
         element: (
-          <PrivateRoute permission="USER_MANAGE_ROLES">
+          <PrivateRoute permission="ROLE_READ">
             <RoleList />
           </PrivateRoute>
         ),
@@ -152,7 +142,7 @@ const router = createBrowserRouter([
       {
         path: "admin/annonces",
         element: (
-          <PrivateRoute permission="USER_MANAGE_ROLES">
+          <PrivateRoute permission="ANNONCE_READ">
             <AnnonceManager />
           </PrivateRoute>
         ),
@@ -160,7 +150,7 @@ const router = createBrowserRouter([
       {
         path: "admin/academique",
         element: (
-          <PrivateRoute permission="USER_MANAGE_ROLES">
+          <PrivateRoute permission="FILIERE_READ">
             <ParametrageAcademique />
           </PrivateRoute>
         ),
@@ -168,7 +158,7 @@ const router = createBrowserRouter([
       {
         path: "emploi-du-temps",
         element: (
-          <PrivateRoute permission="USER_READ">
+          <PrivateRoute permission="EMPLOI_READ">
             <EmploiDuTemps />
           </PrivateRoute>
         ),
@@ -176,7 +166,7 @@ const router = createBrowserRouter([
       {
         path: "admin/roles/create",
         element: (
-          <PrivateRoute permission="USER_MANAGE_ROLES">
+          <PrivateRoute permission="ROLE_CREATE">
             <RoleForm />
           </PrivateRoute>
         ),
@@ -184,7 +174,7 @@ const router = createBrowserRouter([
       {
         path: "admin/roles/edit/:id",
         element: (
-          <PrivateRoute permission="USER_MANAGE_ROLES">
+          <PrivateRoute permission="ROLE_UPDATE">
             <RoleForm />
           </PrivateRoute>
         ),
@@ -192,24 +182,15 @@ const router = createBrowserRouter([
       {
         path: "settings",
         element: (
-          <PrivateRoute permission="USER_READ">
+          <PrivateRoute permission="NOTIFICATION_READ">
             <Notification />
           </PrivateRoute>
         ),
       },
-    
       {
-        path: "admin/report-header",
-        element: (
-          <PrivateRoute permission="UPDATE_MODELE_EN_TETE">
-            <ReportHeaderConfig />
-          </PrivateRoute>
-        ),
-      },
-            {
         path: "admin/fonctions-bureau",
         element: (
-          <PrivateRoute permission="BUREAU_MANAGE">
+          <PrivateRoute permission="FONCTION_BUREAU_READ">
             <FonctionBureauList />
           </PrivateRoute>
         ),
@@ -217,19 +198,27 @@ const router = createBrowserRouter([
       {
         path: "admin/fonctions-bureau/create",
         element: (
-          <PrivateRoute permission="BUREAU_MANAGE">
+          <PrivateRoute permission="FONCTION_BUREAU_CREATE">
             <FonctionBureauForm />
           </PrivateRoute>
         ),
       },
       {
-  path: "admin/fonctions-bureau/edit", 
-  element: (
-    <PrivateRoute permission="BUREAU_MANAGE">
-      <FonctionBureauForm />
-    </PrivateRoute>
-  ),
-},
+        path: "admin/fonctions-bureau/edit", 
+        element: (
+          <PrivateRoute permission="FONCTION_BUREAU_UPDATE">
+            <FonctionBureauForm />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "mes-niveaux",
+        element: (
+          <PrivateRoute permission="MATIERE_READ">
+            <MesNiveaux />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
   {

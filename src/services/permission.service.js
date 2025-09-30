@@ -13,6 +13,7 @@ export const getAllPermissions = async () => {
         const response = await permissionAPI.get("/getAllPermissions");
         return response.data;
     } catch (error) {
-        console.log("erreur de recuperer de toutes les permissions", error);
+        console.error("Erreur lors de la récupération des permissions:", error);
+        throw new Error(error.response?.data?.message || "Erreur lors de la récupération des permissions");
     }
 }

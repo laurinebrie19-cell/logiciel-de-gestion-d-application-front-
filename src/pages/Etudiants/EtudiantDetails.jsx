@@ -67,8 +67,8 @@ const EtudiantDetails = () => {
               </svg>
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Détails de l'étudiant</h2>
-              <p className="text-indigo-100 mt-1">Informations complètes de l'étudiant</p>
+              <h2 className="text-2xl font-bold">Détails de l&apos;étudiant</h2>
+              <p className="text-indigo-100 mt-1">Informations complètes de l&apos;étudiant</p>
             </div>
           </div>
         </div>
@@ -100,7 +100,7 @@ const EtudiantDetails = () => {
             </div>
 
             <div className="bg-gray-50 rounded-xl p-4 space-y-1 md:col-span-2">
-              <p className="text-sm text-gray-500">Niveau d'études</p>
+              <p className="text-sm text-gray-500">Niveau d&apos;études</p>
               <p className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                 {etudiant.niveau}
               </p>
@@ -143,10 +143,9 @@ const EtudiantDetails = () => {
             Supprimer
           </motion.button>
         </div>
+        </div>
       </div>
-    </div>
-  );
-};
+
       {/* Modal de confirmation suppression */}
       <AnimatePresence>
         {showDeleteModal && (

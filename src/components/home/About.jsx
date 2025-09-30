@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const stats = [
   { id: 1, number: "1000+", label: "Étudiants formés" },
-  { id: 2, number: "95%", label: "Taux d&apos;insertion" },
+  { id: 2, number: "95%", label: "Taux d'insertion" },
   { id: 3, number: "50+", label: "Partenaires entreprises" },
   { id: 4, number: "15+", label: "Formateurs experts" },
 ];
@@ -10,10 +10,10 @@ const stats = [
 const features = [
   "Formations adaptées aux besoins du marché",
   "Équipe pédagogique expérimentée",
-  "Accompagnement vers l&apos;emploi",
+  "Accompagnement vers l'emploi",
   "Infrastructure moderne",
   "Pédagogie active et pratique",
-  "Réseau d&apos;alumni dynamique",
+  "Réseau d'alumni dynamique",
 ];
 
 export const About = () => {
@@ -66,8 +66,8 @@ export const About = () => {
               </h2>
               <p className="mt-4 text-lg text-[#64748b]">
                 Fondée avec la vision de former les talents numériques de demain, 
-                AL Infotech Academy s&apos;engage à offrir une formation d&apos;excellence 
-                dans les métiers de l&apos;informatique et du digital.
+                AL Infotech Academy s'engage à offrir une formation d'excellence 
+                dans les métiers de l'informatique et du digital.
               </p>
             </motion.div>
 

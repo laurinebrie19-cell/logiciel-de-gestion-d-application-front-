@@ -4,6 +4,7 @@ import { Plus, Edit2, Trash2, Calendar, ClipboardList } from 'lucide-react';
 import { showToast } from '../../components/common/Toasts';
 import { niveauService } from '../../services/niveau.service';
 import { filiereService } from '../../services/filiere.service';
+import PermissionWrapper from '../../components/PermissionWrapper';
 import EmploiDuTempsForm from './EmploiDuTempsForm';
 import EmploiDuTempsCalendar from './EmploiDuTempsCalendar';
 import { 
@@ -65,9 +66,10 @@ const EmploiDuTemps = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+    <PermissionWrapper permission="EMPLOI_READ">
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {/* Header */}
           <div className="p-6 border-b border-gray-200">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -94,16 +96,18 @@ const EmploiDuTemps = () => {
                     </>
                   )}
                 </button>
-                <button
-                  onClick={() => {
-                    setSelectedEmploi(null);
-                    setShowModal(true);
-                  }}
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-                >
-                  <Plus className="h-5 w-5 mr-2" />
-                  Nouveau
-                </button>
+                <PermissionWrapper permission="EMPLOI_CREATE">
+                  <button
+                    onClick={() => {
+                      setSelectedEmploi(null);
+                      setShowModal(true);
+                    }}
+                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                  >
+                    <Plus className="h-5 w-5 mr-2" />
+                    Nouveau
+                  </button>
+                </PermissionWrapper>
               </div>
             </div>
 
@@ -203,21 +207,25 @@ const EmploiDuTemps = () => {
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                              <button
-                                onClick={() => {
-                                  setSelectedEmploi(emploi);
-                                  setShowModal(true);
-                                }}
-                                className="text-indigo-600 hover:text-indigo-900 mr-4"
-                              >
-                                <Edit2 className="h-5 w-5" />
-                              </button>
-                              <button
-                                onClick={() => handleDelete(emploi.id)}
-                                className="text-red-600 hover:text-red-900"
-                              >
-                                <Trash2 className="h-5 w-5" />
-                              </button>
+                              <PermissionWrapper permission="EMPLOI_UPDATE">
+                                <button
+                                  onClick={() => {
+                                    setSelectedEmploi(emploi);
+                                    setShowModal(true);
+                                  }}
+                                  className="text-indigo-600 hover:text-indigo-900 mr-4"
+                                >
+                                  <Edit2 className="h-5 w-5" />
+                                </button>
+                              </PermissionWrapper>
+                              <PermissionWrapper permission="EMPLOI_DELETE">
+                                <button
+                                  onClick={() => handleDelete(emploi.id)}
+                                  className="text-red-600 hover:text-red-900"
+                                >
+                                  <Trash2 className="h-5 w-5" />
+                                </button>
+                              </PermissionWrapper>
                             </td>
                           </tr>
                         ))
@@ -254,6 +262,7 @@ const EmploiDuTemps = () => {
         )}
       </AnimatePresence>
     </div>
+    </PermissionWrapper>
   );
 };
 

@@ -1,24 +1,56 @@
 import { useState, useEffect } from 'react';
 import { annonceService } from '../../services/annonce.service';
-import { ArrowRight, Calendar, Clock, MapPin } from 'lucide-react';
+import { typeAnnonceService } from '../../services/typeAnnonce.service';
+import { categorieAnnonceService } from '../../services/categorieAnnonce.service';
+import { ArrowRight, Calendar, Clock, MapPin, Filter, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import AnnonceDetailModal from './AnnonceDetailModal';
 
 const AnnoncesList = () => {
   const [annonces, setAnnonces] = useState([]);
+  const [types, setTypes] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedAnnonce, setSelectedAnnonce] = useState(null);
+  const [selectedType, setSelectedType] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
-    fetchAnnonces();
+    fetchFilteredAnnonces();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedType, selectedCategory]);
+
+  useEffect(() => {
+    fetchTypes();
+    fetchCategories();
   }, []);
 
-  const fetchAnnonces = async () => {
+  const fetchTypes = async () => {
+    try {
+      const data = await typeAnnonceService.getAllTypeAnnonces();
+      setTypes(data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des types:', error);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const data = await categorieAnnonceService.getAllCategorieAnnonces();
+      setCategories(data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des catégories:', error);
+    }
+  };
+
+  const fetchFilteredAnnonces = async () => {
     try {
       setLoading(true);
-      const data = await annonceService.getActiveAnnonces();
+      const data = await annonceService.getFilteredAnnonces(selectedType, selectedCategory);
       setAnnonces(data);
     } catch (error) {
-      console.error('Erreur lors de la récupération des annonces:', error);
+      console.error('Erreur lors de la récupération des annonces filtrées:', error);
     } finally {
       setLoading(false);
     }
@@ -26,13 +58,82 @@ const AnnoncesList = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-          Actualités et Annonces
-        </h2>
-        <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
-          Restez informé des dernières nouvelles et événements de notre académie
-        </p>
+      <div className="relative z-10">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+            Actualités et Annonces
+          </h2>
+          <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
+            Restez informé des dernières nouvelles et événements de notre académie
+          </p>
+        </div>
+
+        <div className="mt-8 flex justify-center">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowFilters(!showFilters)}
+            className="inline-flex items-center px-6 py-3 rounded-full bg-blue-600 text-white font-semibold shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
+          >
+            <Filter className="h-5 w-5 mr-2" />
+            Filtrer les annonces
+          </motion.button>
+        </div>
+
+        <AnimatePresence>
+          {showFilters && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="mt-6 bg-blue-50 border border-blue-200 rounded-xl shadow-lg p-6 mx-auto max-w-4xl"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-blue-900">Filtres</h3>
+                <button 
+                  onClick={() => setShowFilters(false)}
+                  className="text-gray-500 hover:text-gray-800 transition-colors"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-base font-medium text-gray-800 mb-2">Type d&apos;annonce</label>
+                  <select
+                    value={selectedType}
+                    onChange={(e) => setSelectedType(e.target.value)}
+                    className="w-full text-base py-3 px-4 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-shadow"
+                  >
+                    <option value="all">Tous les types</option>
+                    {types.map((type) => (
+                      <option key={type.id} value={type.id.toString()}>
+                        {type.nom}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-base font-medium text-gray-800 mb-2">Catégorie</label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full text-base py-3 px-4 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-shadow"
+                  >
+                    <option value="all">Toutes les catégories</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id.toString()}>
+                        {category.nom}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {loading ? (

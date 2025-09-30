@@ -6,20 +6,14 @@ import { useAuth } from "../contexts/AutContext";
 import {
   LayoutDashboard,
   Users,
-  PiggyBank,
-  Wallet,
-  Receipt,
-  BarChart2,
   Settings,
-  CircleDollarSign,
-  ArrowLeftRight,
   ChevronDown,
   Home,
-  Landmark,
   Shield,
   FileText,
   Building2,
   Calendar,
+  BookOpen,
 } from "lucide-react";
 
 const navItems = [
@@ -37,27 +31,25 @@ const navItems = [
         path: "/etudiants",
         label: "Étudiants",
         icon: Users,
-        requiredPermission: "USER_READ",
+        requiredPermission: "ETUDIANT_READ",
       },
       {
         path: "/users",
         label: "Personnel",
         icon: Users,
-        requiredPermission: "USER_UPDATE",
+        requiredPermission: "USER_READ",
       },
       {
         path: "/emploi-du-temps",
         label: "Emploi du temps",
         icon: Calendar,
-        requiredPermission: "USER_READ",
+        requiredPermission: "EMPLOI_READ",
       },
-     
-     
       {
-        path: "/statistics",
-        label: "Statistiques",
-        icon: BarChart2,
-        requiredPermission: "STATISTICS_VIEW",
+        path: "/mes-niveaux",
+        label: "Mes Niveaux",
+        icon: BookOpen,
+        requiredPermission: "MATIERE_READ",
       },
     ],
   },
@@ -66,34 +58,50 @@ const navItems = [
     section: "Administration",
     icon: Shield,
     items: [
-     
-     /*
-      {
-        path: "/admin/fonctions-bureau",
-        label: "Fonctions du Bureau",
-        icon: Building2,
-        requiredPermission: "BUREAU_MANAGE",
-      },*/
-     
       {
         path: "/admin/roles",
-        label: "Paramètres Rôles",
+        label: "Gestion des Rôles",
         icon: Settings,
-        requiredPermission: "USER_MANAGE_ROLES",
+        requiredPermission: "ROLE_CREATE",
       },
-     
-
       {
         path: "/admin/annonces",
         label: "Gestion des Annonces",
         icon: FileText,
-        requiredPermission: "USER_MANAGE_ROLES",
+        requiredPermission: "ANNONCE_CREATE",
+      },
+      {
+        path: "/admin/fonctions-bureau",
+        label: "Fonctions du Bureau",
+        icon: Building2,
+        requiredPermission: "FONCTION_BUREAU_READ",
       },
       {
         path: "/admin/academique",
         label: "Paramètres Académiques",
         icon: Settings,
-        requiredPermission: "USER_MANAGE_ROLES",
+        items: [
+          {
+            path: "/admin/filieres",
+            label: "Filières",
+            requiredPermission: "FILIERE_READ",
+          },
+          {
+            path: "/admin/niveaux",
+            label: "Niveaux",
+            requiredPermission: "NIVEAU_READ",
+          },
+          {
+            path: "/admin/matieres",
+            label: "Matières",
+            requiredPermission: "MATIERE_READ",
+          },
+          {
+            path: "/admin/salles",
+            label: "Salles",
+            requiredPermission: "SALLE_READ",
+          }
+        ],
       },
     ],
   },

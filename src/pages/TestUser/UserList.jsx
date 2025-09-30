@@ -11,6 +11,7 @@ import {
   Users,
   WifiOff,
 } from "lucide-react";
+import { useAuth } from "../../contexts/AutContext";
 import { useNavigate } from "react-router-dom";
 import Toast from "./Toasts";
 import { getAllUsers, deleteUser } from "../../services/user.service";
@@ -32,6 +33,8 @@ const UserList = () => {
   const [error, setError] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
+  const { user: currentUser } = useAuth();
+  
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -42,7 +45,13 @@ const UserList = () => {
           throw new Error("Le serveur n'a pas retourné de données");
         }
 
-        setUsers(response);
+        // Filtrer les utilisateurs en fonction du rôle
+        const isAdmin = currentUser?.roles?.includes("Admin");
+        const filteredResponse = isAdmin 
+          ? response 
+          : response.filter(u => u.id === currentUser?.id);
+
+        setUsers(filteredResponse);
         setStatus("success");
       } catch (error) {
         console.error("Erreur API:", error);
@@ -68,7 +77,7 @@ const UserList = () => {
     };
 
     fetchUsers();
-  }, []);
+  }, [currentUser?.id, currentUser?.roles]);
 
   const handleDelete = async () => {
     if (!selectedUser) return;
@@ -453,7 +462,7 @@ const UserList = () => {
                   </div>
                   <div className="flex-1">
                     <p className="text-gray-600">
-                      Êtes-vous sûr de vouloir supprimer l'utilisateur{" "}
+                      Êtes-vous sûr de vouloir supprimer l&apos;utilisateur{" "}
                       <span className="font-semibold">
                         {selectedUser?.firstName} {selectedUser?.lastName}
                       </span>{" "}

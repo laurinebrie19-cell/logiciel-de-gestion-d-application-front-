@@ -1,72 +1,10 @@
 import { motion } from "framer-motion";
 import { useParams, Link } from "react-router-dom";
+import { blogPosts } from "../../data/blog";
+import { ArrowLeft, Share2, Bookmark, Calendar, Tag, ChevronLeft } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
-// Cette fonction sera remplacée par un appel API dans une vraie application
 const getPostById = (id) => {
-  const blogPosts = [
-    {
-      id: 1,
-      title: "Découvrez nos nouvelles formations en cybersécurité",
-      date: "20 septembre 2025",
-      author: "Sarah Johnson",
-      category: "Formations",
-      excerpt: "En réponse aux besoins croissants du marché, AL Infotech Academy lance de nouvelles formations certifiantes en cybersécurité...",
-      content: `En réponse aux besoins croissants du marché, AL Infotech Academy lance de nouvelles formations certifiantes en cybersécurité. Ces programmes, développés en collaboration avec des experts du secteur, couvrent les dernières technologies et méthodologies en matière de sécurité informatique.
-
-      Les formations incluent :
-      - Analyse des menaces et gestion des risques
-      - Sécurité des réseaux et des systèmes
-      - Tests d&apos;intrusion et ethical hacking
-      - Réponse aux incidents de sécurité
-      
-      Les inscriptions sont ouvertes pour la session de janvier 2026.
-
-      ## Programme détaillé
-
-      ### Module 1 : Fondamentaux de la cybersécurité
-      - Introduction aux concepts de base
-      - Panorama des menaces actuelles
-      - Cadre juridique et conformité
-
-      ### Module 2 : Sécurité des réseaux
-      - Architecture réseau sécurisée
-      - Configuration des pare-feu
-      - Détection et prévention des intrusions
-
-      ### Module 3 : Tests d&apos;intrusion
-      - Méthodologie de test
-      - Outils et techniques
-      - Rédaction de rapports
-
-      ### Module 4 : Réponse aux incidents
-      - Création d&apos;un plan de réponse
-      - Investigation numérique
-      - Récupération et leçons apprises
-
-      ## Débouchés professionnels
-
-      Les diplômés de cette formation pourront prétendre aux postes suivants :
-      - Analyste en cybersécurité
-      - Pentesteur
-      - Responsable de la sécurité des systèmes d&apos;information
-      - Consultant en sécurité informatique
-
-      ## Modalités d&apos;inscription
-
-      Pour vous inscrire à cette formation :
-      1. Remplissez le formulaire de candidature en ligne
-      2. Participez à un entretien de motivation
-      3. Passez un test technique d&apos;évaluation
-      4. Recevez votre confirmation d&apos;inscription
-
-      N&apos;hésitez pas à nous contacter pour plus d&apos;informations.`,
-      image: "/src/assets/images/cyber-security.jpg",
-      tags: ["Cybersécurité", "Formation", "Technologie"],
-      author_image: "/src/assets/images/author1.jpg",
-      author_role: "Responsable des formations en cybersécurité"
-    }
-    // ... autres articles
-  ];
   return blogPosts.find(post => post.id === Number(id));
 };
 
@@ -76,120 +14,192 @@ export const BlogPostDetail = () => {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-[#0f172a] mb-4">Article non trouvé</h1>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center px-4"
+        >
+          <div className="mb-8">
+            <div className="w-24 h-24 bg-slate-100 rounded-full mx-auto flex items-center justify-center mb-6">
+              <ChevronLeft className="w-12 h-12 text-slate-400" />
+            </div>
+            <h1 className="text-3xl font-bold text-slate-800 mb-4">Article non trouvé</h1>
+            <p className="text-slate-600 mb-8">Désolé, l&apos;article que vous recherchez n&apos;existe pas ou a été déplacé.</p>
+          </div>
           <Link 
             to="/blog"
-            className="text-[#0ea5e9] hover:text-[#0284c7] transition-colors"
+            className="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all"
           >
-            Retour aux articles
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Retour au Blog
           </Link>
-        </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafc]">
-      {/* Hero section avec image */}
-      <div className="relative h-[60vh] bg-[#0f172a] overflow-hidden">
+    <div className="min-h-screen bg-slate-50">
+      {/* Bouton retour */}
+      <div className="fixed top-6 left-6 z-50">
+        <Link
+          to="/blog"
+          className="flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-slate-50 transition-all text-slate-700"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="font-medium">Retour</span>
+        </Link>
+      </div>
+
+      {/* Hero section */}
+      <div className="relative bg-slate-900">
+        {/* Background Image */}
         <div className="absolute inset-0">
           <img
             src={post.image}
             alt={post.title}
-            className="w-full h-full object-cover opacity-30"
+            className="w-full h-full object-cover opacity-20"
           />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-slate-900/70 to-slate-900" />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] to-transparent" />
-        <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-end pb-16">
-          <div className="max-w-3xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <div className="flex items-center gap-4 mb-4">
-                <span className="px-3 py-1 text-sm font-medium bg-[#0ea5e9] text-white rounded-full">
-                  {post.category}
-                </span>
-                <span className="text-[#94a3b8]">{post.date}</span>
+
+        {/* Content */}
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            {/* Category & Date */}
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <span className="px-4 py-1.5 bg-indigo-500 text-white text-sm font-semibold rounded-full">
+                {post.category}
+              </span>
+              <span className="flex items-center text-slate-400 text-sm">
+                <Calendar className="w-4 h-4 mr-2" />
+                {post.date}
+              </span>
+            </div>
+
+            {/* Title */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
+              {post.title}
+            </h1>
+
+            {/* Author */}
+            <div className="flex items-center justify-center gap-4">
+              <img
+                src={post.authorImage}
+                alt={post.author}
+                className="w-14 h-14 rounded-full object-cover border-2 border-indigo-400"
+              />
+              <div className="text-left">
+                <div className="font-semibold text-white">{post.author}</div>
+                <div className="text-sm text-slate-400">{post.authorRole}</div>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                {post.title}
-              </h1>
-              <div className="flex items-center gap-4">
-                <img
-                  src={post.author_image}
-                  alt={post.author}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div>
-                  <div className="font-medium text-white">{post.author}</div>
-                  <div className="text-sm text-[#94a3b8]">{post.author_role}</div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* Contenu de l'article */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          <motion.article 
-            className="lg:col-span-2 prose prose-lg prose-slate max-w-none"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            {post.content.split("\n").map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
-            ))}
-          </motion.article>
+            {/* Article Content */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 mb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-white rounded-2xl shadow-xl overflow-hidden"
+        >
+          {/* Article Content */}
+          <div className="p-6 md:p-10">
+            <div className="prose prose-lg prose-slate max-w-none">
+              <ReactMarkdown
+                components={{
+                  h1: (props) => <h1 className="text-3xl font-bold mt-8 mb-4" {...props} />,
+                  h2: (props) => <h2 className="text-2xl font-bold mt-8 mb-4" {...props} />,
+                  h3: (props) => <h3 className="text-xl font-bold mt-6 mb-3 text-indigo-900" {...props} />,
+                  p: (props) => <p className="mb-4 text-slate-600 leading-relaxed" {...props} />,
+                  ul: (props) => <ul className="my-4 list-disc pl-6 space-y-2" {...props} />,
+                  li: (props) => <li className="text-slate-600" {...props} />,
+                  strong: (props) => <strong className="font-semibold text-slate-900" {...props} />,
+                }}
+              >
+                {post.content}
+              </ReactMarkdown>
+            </div>
 
-          <motion.aside
-            className="space-y-8"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            {/* Tags */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-[#e2e8f0]">
-              <h3 className="text-lg font-semibold text-[#0f172a] mb-4">Tags</h3>
-              <div className="flex flex-wrap gap-2">
-                {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-3 py-1 text-sm bg-[#f1f5f9] text-[#64748b] rounded-full"
-                  >
-                    {tag}
-                  </span>
-                ))}
+            {/* Tags Section */}
+            <div className="mt-12 pt-6 border-t border-slate-200">
+              <div className="flex items-center gap-x-6 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <Tag className="w-5 h-5 text-indigo-500" />
+                  <span className="font-semibold text-slate-700">Tags:</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {post.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-4 py-1.5 text-sm font-medium bg-slate-100 text-slate-700 rounded-full hover:bg-slate-200 transition-colors"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-[#e2e8f0]">
-              <h3 className="text-lg font-semibold text-[#0f172a] mb-4">
-                Intéressé par cette formation ?
-              </h3>
-              <div className="space-y-4">
+            {/* Share and Actions */}
+            <div className="mt-8 pt-6 border-t border-slate-200 flex flex-wrap gap-6 items-center justify-between">
+              <div className="flex items-center gap-4">
+                <button className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-indigo-600 transition-colors">
+                  <Share2 className="w-5 h-5" />
+                  <span>Partager</span>
+                </button>
+                <button className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-indigo-600 transition-colors">
+                  <Bookmark className="w-5 h-5" />
+                  <span>Sauvegarder</span>
+                </button>
+              </div>
+              <div className="flex gap-4">
                 <Link
                   to="/contact"
-                  className="block w-full text-center px-6 py-3 bg-[#0ea5e9] text-white font-medium rounded-lg hover:bg-[#0284c7] transition-colors"
+                  className="px-6 py-2.5 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
                 >
                   Nous contacter
                 </Link>
-                <Link
-                  to="/inscription"
-                  className="block w-full text-center px-6 py-3 bg-white text-[#0ea5e9] font-medium rounded-lg border border-[#0ea5e9] hover:bg-[#f1f5f9] transition-colors"
-                >
-                  S&apos;inscrire
-                </Link>
               </div>
             </div>
-          </motion.aside>
-        </div>
+          </div>
+        </motion.div>
+
+        {/* Navigation entre articles */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-12 flex justify-between items-center"
+        >
+          {post.id > 1 && (
+            <Link
+              to={`/blog/${post.id - 1}`}
+              className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span>Article précédent</span>
+            </Link>
+          )}
+          {post.id < blogPosts.length && (
+            <Link
+              to={`/blog/${post.id + 1}`}
+              className="ml-auto flex items-center gap-2 text-slate-600 hover:text-indigo-600 transition-colors"
+            >
+              <span>Article suivant</span>
+              <ArrowLeft className="w-5 h-5 rotate-180" />
+            </Link>
+          )}
+        </motion.div>
       </div>
     </div>
   );

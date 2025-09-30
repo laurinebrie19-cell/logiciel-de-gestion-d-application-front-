@@ -56,3 +56,13 @@ export const deleteUser = async (id) => {
     console.log("erreur lors de la suppression d'un user", error);
   }
 };
+
+export const getNiveauxByEnseignant = async (enseignantId) => {
+  try {
+    const response = await userAPi.get(`/${enseignantId}/niveaux`);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des niveaux de l'enseignant:", error);
+    throw error;
+  }
+};
