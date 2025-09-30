@@ -4,8 +4,8 @@ import { getEtudiantById, createEtudiant, updateEtudiant } from "../../services/
 import { motion } from "framer-motion";
 import { showToast } from "../../components/common/Toasts";
 import FormField from "../../components/ui/FormField";
+import { niveauService } from "../../services/niveau.service";
 
-const niveaux = ["Licence 1", "Licence 2", "Licence 3", "Master 1", "Master 2"];
 const sexes = ["Masculin", "Féminin"];
 
 const EtudiantForm = () => {
@@ -19,11 +19,27 @@ const EtudiantForm = () => {
     prenom: "",
     dateNaissance: "",
     sexe: "",
-    niveau: "",
+    niveauId: "",
+    email: "",
   });
+  const [niveauxList, setNiveauxList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [initialLoading, setInitialLoading] = useState(isEditing);
+
+  // Charger les niveaux au chargement du composant
+  useEffect(() => {
+    const fetchNiveaux = async () => {
+      try {
+        const response = await niveauService.getNiveaux();
+        setNiveauxList(response);
+      } catch (err) {
+        console.error("Erreur lors du chargement des niveaux:", err);
+        showToast("error", "Erreur lors du chargement des niveaux");
+      }
+    };
+    fetchNiveaux();
+  }, []);
 
   useEffect(() => {
     if (isEditing) {
@@ -50,14 +66,16 @@ const EtudiantForm = () => {
     const newErrors = {};
     if (!formData.nom.trim()) newErrors.nom = "Le nom est requis";
     if (!formData.prenom.trim()) newErrors.prenom = "Le prénom est requis";
-    if (!formData.dateNaissance) newErrors.dateNaissance = "Date de naissance requise";
+    if (!formData.dateNaissance) newErrors.dateNaissance = "La date de naissance est requise";
     if (!formData.sexe) newErrors.sexe = "Le sexe est requis";
-    if (!formData.niveau) newErrors.niveau = "Le niveau est requis";
+    if (!formData.niveauId) newErrors.niveauId = "Le niveau est requis";
+    if (!formData.email) newErrors.email = "L'email est requis";
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Format d'email invalide";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
-
-  const handleChange = (e) => {
+  };  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -302,14 +320,38 @@ const EtudiantForm = () => {
             </div>
 
             <div className="bg-gray-50 rounded-xl p-6">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Niveau
+                </label>
+                <select
+                  name="niveauId"
+                  value={formData.niveauId}
+                  onChange={handleChange}
+                  className={`block w-full px-4 py-3 rounded-xl border border-gray-200 
+                    focus:ring-2 focus:ring-indigo-400 focus:border-transparent 
+                    transition-all duration-200 bg-white
+                    ${errors.niveauId ? "border-red-300 text-red-900" : ""}`}
+                >
+                  <option value="">Sélectionner un niveau</option>
+                  {niveauxList.map((niveau) => (
+                    <option key={niveau.id} value={niveau.id}>
+                      {niveau.nom}
+                    </option>
+                  ))}
+                </select>
+                {errors.niveauId && (
+                  <p className="text-red-600 text-sm mt-1">{errors.niveauId}</p>
+                )}
+              </div>
               <FormField
-                label="Niveau"
-                name="niveau"
-                type="select"
-                value={formData.niveau}
+                label="Email"
+                name="email"
+                type="email"
+                value={formData.email}
                 onChange={handleChange}
-                error={errors.niveau}
-                options={niveaux}
+                error={errors.email}
+                placeholder="exemple@email.com"
                 className="bg-white"
               />
             </div>

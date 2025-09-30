@@ -4,6 +4,9 @@ import MainLayout from "../layouts/MainLayouts";
 import Dashboard from "../pages/Dashboard/DahboardPage/Dashboard";
 import EmploiDuTemps from "../pages/EmploiDuTemps/EmploiDuTemps";
 import UserList from "../pages/TestUser/UserList";
+import AjoutNote from "../pages/Notes/AjoutNote";
+import NotesEtudiant from "../pages/Notes/NotesEtudiant";
+import NotesParNiveau from "../pages/Notes/NotesParNiveau";
 import UserForm from "../pages/TestUser/UserForm";
 import UserDetails from "../pages/TestUser/UserDetails";
 import EtudiantsPage from "../pages/Etudiants/EtudiantsPage";
@@ -216,6 +219,30 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute permission="MATIERE_READ">
             <MesNiveaux />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "notes/ajouter",
+        element: (
+          <PrivateRoute permission="NOTE_CREATE">
+            <AjoutNote />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "notes/mes-notes",
+        element: (
+          <PrivateRoute permission="NOTE_READ">
+            <NotesEtudiant />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "notes/niveau",
+        element: (
+          <PrivateRoute permission="NOTE_READ_ALL">
+            <NotesParNiveau />
           </PrivateRoute>
         ),
       },

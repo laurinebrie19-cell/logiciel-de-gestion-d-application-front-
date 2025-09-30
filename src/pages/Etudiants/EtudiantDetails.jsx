@@ -67,8 +67,8 @@ const EtudiantDetails = () => {
               </svg>
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Détails de l&apos;étudiant</h2>
-              <p className="text-indigo-100 mt-1">Informations complètes de l&apos;étudiant</p>
+              <h2 className="text-2xl font-bold">Détails de l'étudiant</h2>
+              <p className="text-indigo-100 mt-1">Informations complètes de l'étudiant</p>
             </div>
           </div>
         </div>

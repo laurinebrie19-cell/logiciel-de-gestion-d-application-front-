@@ -48,6 +48,16 @@ export const updateEtudiant = async (id, data) => {
   }
 };
 
+export const getEtudiantsByNiveau = async (niveauId) => {
+  try {
+    const response = await etudiantApi.get(`/niveau/${niveauId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des étudiants par niveau", error);
+    throw error;
+  }
+};
+
 export const deleteEtudiant = async (id) => {
   try {
     const response = await etudiantApi.delete(`/${id}`);

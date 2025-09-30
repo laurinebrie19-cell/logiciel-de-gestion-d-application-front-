@@ -21,5 +21,6 @@ export const apiConfig = {
   salle: "http://localhost:8066/api/salles",
   categorieAnnonce: "http://localhost:8066/api/categories-annonce",
   typeAnnonce: "http://localhost:8066/api/types-annonce",
-  annonce: "http://localhost:8066/api/annonces"
+  annonce: "http://localhost:8066/api/annonces",
+  note: "http://localhost:8066/api/notes"
 };
