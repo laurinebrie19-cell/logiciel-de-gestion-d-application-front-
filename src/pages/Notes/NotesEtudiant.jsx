@@ -3,30 +3,93 @@ import { useAuth } from "../../contexts/AutContext";
 import { motion } from "framer-motion";
 import { showToast } from "../../components/common/Toasts";
 import { getNotesParEtudiant } from "../../services/note.service";
+import { getAllEtudiants } from "../../services/etudiant.service";
 import PermissionWrapper from "../../components/PermissionWrapper";
 
 const NotesEtudiant = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState([]);
+  const [etudiantId, setEtudiantId] = useState(null);
 
+  // D'abord récupérer l'ID de l'étudiant
+  useEffect(() => {
+    const fetchEtudiantId = async () => {
+      try {
+        if (!user?.email) {
+          throw new Error("Email de l'utilisateur non disponible");
+        }
+        const etudiants = await getAllEtudiants();
+        const etudiant = etudiants.find(e => e.email === user.email);
+        
+        if (!etudiant) {
+          throw new Error("Aucun étudiant trouvé avec cet email");
+        }
+        
+        setEtudiantId(etudiant.id);
+      } catch (err) {
+        console.error("Erreur lors de la récupération de l'ID étudiant:", err);
+        showToast("error", err.message || "Erreur lors de la récupération des informations étudiant");
+      }
+    };
+
+    if (user?.email) {
+      fetchEtudiantId();
+    }
+  }, [user?.email]);
+
+  // Ensuite récupérer les notes avec l'ID étudiant
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await getNotesParEtudiant(user.id);
-        setNotes(response);
+        if (!etudiantId) {
+          throw new Error("ID étudiant non disponible");
+        }
+        console.log("Récupération des notes pour l'étudiant ID:", etudiantId);
+        const response = await getNotesParEtudiant(etudiantId);
+        console.log("Réponse de l'API:", response);
+        
+        if (!response) {
+          console.warn("Réponse vide de l'API");
+          setNotes([]);
+          return;
+        }
+
+        if (!Array.isArray(response)) {
+          console.error("La réponse n'est pas un tableau:", response);
+          showToast("error", "Format de réponse incorrect");
+          setNotes([]);
+          return;
+        }
+
+        // Vérification du format des notes
+        const validNotes = response.filter(note => {
+          const isValid = note.id && note.valeur !== undefined && note.matiereNom && note.dateAjout;
+          if (!isValid) {
+            console.warn("Note invalide détectée:", note);
+          }
+          return isValid;
+        });
+
+        console.log("Notes valides:", validNotes);
+        setNotes(validNotes);
+        
+        if (validNotes.length === 0 && response.length > 0) {
+          showToast("warning", "Certaines notes ont un format incorrect");
+        }
       } catch (err) {
         console.error("Erreur lors de la récupération des notes:", err);
-        showToast("error", "Erreur lors de la récupération des notes");
+        showToast("error", err.message || "Erreur lors de la récupération des notes");
+        setNotes([]);
       } finally {
         setLoading(false);
       }
     };
 
-    if (user?.id) {
+    if (etudiantId) {
       fetchNotes();
     }
-  }, [user?.id]);
+  }, [etudiantId]);
 
   if (loading) {
     return (
@@ -46,8 +109,12 @@ const NotesEtudiant = () => {
           </div>
 
           <div className="p-6">
-            {notes.length === 0 ? (
-              <p className="text-center text-gray-500">Aucune note disponible</p>
+            {!notes || notes.length === 0 ? (
+              <div className="text-center text-gray-500">
+                <p>Aucune note disponible</p>
+                <p className="text-sm mt-2">ID Étudiant: {etudiantId || 'Non disponible'}</p>
+                <p className="text-sm mt-1">Email: {user?.email || 'Non connecté'}</p>
+              </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">

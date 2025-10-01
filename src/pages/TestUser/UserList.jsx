@@ -15,6 +15,7 @@ import { useAuth } from "../../contexts/AutContext";
 import { useNavigate } from "react-router-dom";
 import Toast from "./Toasts";
 import { getAllUsers, deleteUser } from "../../services/user.service";
+import { getAllRoles } from "../../services/role.service";
 import PermissionWrapper from "../../components/PermissionWrapper";
 import Spinner from "../../components/common/Spinner";
 
@@ -29,27 +30,40 @@ const UserList = () => {
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState("error");
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const { user: currentUser } = useAuth();
-  
+
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchData = async () => {
       try {
         setStatus("loading");
-        const response = await getAllUsers();
+        const [usersResponse, rolesResponse] = await Promise.all([
+          getAllUsers(),
+          getAllRoles()
+        ]);
 
-        if (!response) {
+        if (!usersResponse) {
           throw new Error("Le serveur n'a pas retourné de données");
         }
 
-        // Filtrer les utilisateurs en fonction du rôle
-        const isAdmin = currentUser?.roles?.includes("Admin");
-        const filteredResponse = isAdmin 
-          ? response 
-          : response.filter(u => u.id === currentUser?.id);
+        // Filtrer les rôles pour exclure "Etudiant"
+        const filteredRoles = rolesResponse.filter(role => role.roleName !== "Etudiant");
+        setRoles(filteredRoles);
+
+        // Filtrer les utilisateurs
+        const isAdmin = currentUser?.roles?.includes("Admin") || currentUser?.roles?.includes("SuperAdmin");
+        let filteredResponse = isAdmin
+          ? usersResponse
+          : usersResponse.filter(u => u.id === currentUser?.id);
+
+        // Exclure les utilisateurs qui sont étudiants
+        filteredResponse = filteredResponse.filter(user => 
+          !user.roles?.includes("Etudiant")
+        );
 
         setUsers(filteredResponse);
         setStatus("success");
@@ -76,7 +90,7 @@ const UserList = () => {
       }
     };
 
-    fetchUsers();
+    fetchData();
   }, [currentUser?.id, currentUser?.roles]);
 
   const handleDelete = async () => {
@@ -113,14 +127,18 @@ const UserList = () => {
 
   const getReadableRole = (role) => {
     switch (role) {
-      case "Admin":
+      case "ROLE_ADMIN":
         return "Administrateur";
-      case "Tresorier":
-        return "Trésorière";
-      case "Membre":
-        return "Membre";
+      case "ROLE_SUPER_ADMIN":
+        return "Super Administrateur";
+      case "ROLE_TRESORIER":
+        return "Trésorier";
+      case "ROLE_ETUDIANT":
+        return "Étudiant";
+      case "ROLE_ENSEIGNANT":
+        return "Enseignant";
       default:
-        return role || "Inconnu";
+        return role ? role.replace('ROLE_', '').replace(/_/g, ' ').toLowerCase() : "Inconnu";
     }
   };
 
@@ -254,9 +272,11 @@ const UserList = () => {
               className="px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="Tous les rôles">Tous les rôles</option>
-              <option value="Admin">Administrateur</option>
-              <option value="Tresorier">Trésorière</option>
-              <option value="Membre">Membre</option>
+              {roles.map(role => (
+                <option key={role.id} value={role.roleName}>
+                  {getReadableRole(role.roleName)}
+                </option>
+              ))}
             </select>
             <select
               value={selectedStatus}
@@ -330,18 +350,16 @@ const UserList = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                        user.status === "Actif"
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${user.status === "Actif"
                           ? "bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-100/50"
                           : "bg-gradient-to-r from-red-50 to-rose-50 text-red-700 border border-red-100/50"
-                      } shadow-sm`}
+                        } shadow-sm`}
                     >
                       <span
-                        className={`w-1.5 h-1.5 rounded-full mr-2 ${
-                          user.status === "Actif"
+                        className={`w-1.5 h-1.5 rounded-full mr-2 ${user.status === "Actif"
                             ? "bg-green-500"
                             : "bg-red-500"
-                        }`}
+                          }`}
                       ></span>
                       {user.status || "Inactif"}
                     </span>
@@ -484,9 +502,8 @@ const UserList = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleDelete}
-                  className={`px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg ${
-                    deleteLoading ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  className={`px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg ${deleteLoading ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                   disabled={deleteLoading}
                 >
                   Supprimer définitivement

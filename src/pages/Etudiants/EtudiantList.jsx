@@ -4,14 +4,17 @@ import { getAllEtudiants, deleteEtudiant } from "../../services/etudiant.service
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, Trash2, Edit, Eye } from "react-feather";
 import { showToast } from "../../components/common/Toasts";
-
-const niveaux = ["Licence 1", "Licence 2", "Licence 3", "Master 1", "Master 2"];
+import { useAuth } from "../../contexts/AutContext";
+import PermissionWrapper from "../../components/PermissionWrapper";
+import { niveauService } from "../../services/niveau.service";
 
 const EtudiantList = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedNiveau, setSelectedNiveau] = useState("Tous");
   const [etudiants, setEtudiants] = useState([]);
+  const [niveaux, setNiveaux] = useState([]);
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState(null);
   const [selectedEtudiant, setSelectedEtudiant] = useState(null);
@@ -19,16 +22,24 @@ const EtudiantList = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
-    setStatus("loading");
-    getAllEtudiants()
-      .then((data) => {
-        setEtudiants(data || []);
+    const loadData = async () => {
+      setStatus("loading");
+      try {
+        const [etudiantsData, niveauxData] = await Promise.all([
+          getAllEtudiants(),
+          niveauService.getNiveaux()
+        ]);
+        setEtudiants(etudiantsData || []);
+        setNiveaux(niveauxData || []);
         setStatus("success");
-      })
-      .catch((err) => {
-        setError("Erreur lors du chargement des étudiants");
+      } catch (error) {
+        console.error("Erreur lors du chargement:", error);
+        setError("Erreur lors du chargement des données");
         setStatus("error");
-      });
+      }
+    };
+
+    loadData();
   }, []);
 
   const handleDelete = async () => {
@@ -47,10 +58,25 @@ const EtudiantList = () => {
   };
 
   const filteredEtudiants = etudiants.filter((e) => {
-    const matchNom = e.nom.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchPrenom = e.prenom.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchNiveau = selectedNiveau === "Tous" || e.niveau === selectedNiveau;
-    return (matchNom || matchPrenom) && matchNiveau;
+    // Si l'utilisateur est un étudiant, ne montrer que son compte
+    if (user?.role === "Etudiant") {
+      return e.email === user.email;
+    }
+
+    const searchTermLower = searchTerm.toLowerCase().trim();
+
+    // Recherche améliorée
+    const searchMatch = searchTermLower === "" || [
+      e.nom,
+      e.prenom,
+      e.matricule,
+      e.email
+    ].some(field => field?.toLowerCase().includes(searchTermLower));
+
+    // Filtre par niveau
+    const niveauMatch = selectedNiveau === "Tous" || niveaux.find(n => n.id === parseInt(selectedNiveau))?.nom === e.niveau;
+
+    return searchMatch && niveauMatch;
   });
 
   return (
@@ -61,17 +87,19 @@ const EtudiantList = () => {
             <h1 className="text-3xl font-bold text-white mb-2">Gestion des étudiants</h1>
             <p className="text-indigo-100 text-sm">Gérez vos étudiants, leurs informations et leurs parcours académiques</p>
           </div>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => navigate("/etudiants/nouveau")}
-            className="bg-white text-indigo-700 px-6 py-3 rounded-xl shadow-lg hover:bg-indigo-50 transition-all duration-200 flex items-center gap-2 font-semibold"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            Nouvel étudiant
-          </motion.button>
+          <PermissionWrapper permission="ETUDIANT_CREATE">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate("/etudiants/nouveau")}
+              className="bg-white text-indigo-700 px-6 py-3 rounded-xl shadow-lg hover:bg-indigo-50 transition-all duration-200 flex items-center gap-2 font-semibold"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Nouvel étudiant
+            </motion.button>
+          </PermissionWrapper>
         </div>
       </div>
       <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
@@ -106,7 +134,7 @@ const EtudiantList = () => {
               >
                 <option value="Tous">Tous les niveaux</option>
                 {niveaux.map((niveau) => (
-                  <option key={niveau} value={niveau}>{niveau}</option>
+                  <option key={niveau.id} value={niveau.id}>{niveau.nom}</option>
                 ))}
               </select>
             </div>
@@ -179,15 +207,14 @@ const EtudiantList = () => {
                       {new Date(e.dateNaissance).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-3 py-1 inline-flex text-sm leading-5 font-medium rounded-full ${
-                        e.sexe === "Masculin" ? "bg-blue-100 text-blue-800" : "bg-pink-100 text-pink-800"
-                      }`}>
+                      <span className={`px-3 py-1 inline-flex text-sm leading-5 font-medium rounded-full ${e.sexe === "Masculin" ? "bg-blue-100 text-blue-800" : "bg-pink-100 text-pink-800"
+                        }`}>
                         {e.sexe}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="px-3 py-1 inline-flex text-sm leading-5 font-medium rounded-full bg-green-100 text-green-800">
-                        {e.niveau}
+                        {e.niveau || "Non défini"}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -200,25 +227,29 @@ const EtudiantList = () => {
                         >
                           <Eye size={18} />
                         </motion.button>
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => navigate(`/etudiants/modifier/${e.id}`)}
-                          className="text-amber-600 hover:text-amber-800 bg-amber-50 p-2 rounded-lg transition-all duration-200"
-                        >
-                          <Edit size={18} />
-                        </motion.button>
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => {
-                            setSelectedEtudiant(e);
-                            setShowDeleteModal(true);
-                          }}
-                          className="text-red-600 hover:text-red-800 bg-red-50 p-2 rounded-lg transition-all duration-200"
-                        >
-                          <Trash2 size={18} />
-                        </motion.button>
+                        <PermissionWrapper permission="ETUDIANT_UPDATE">
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => navigate(`/etudiants/modifier/${e.id}`)}
+                            className="text-amber-600 hover:text-amber-800 bg-amber-50 p-2 rounded-lg transition-all duration-200"
+                          >
+                            <Edit size={18} />
+                          </motion.button>
+                        </PermissionWrapper>
+                        <PermissionWrapper permission="ETUDIANT_DELETE">
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => {
+                              setSelectedEtudiant(e);
+                              setShowDeleteModal(true);
+                            }}
+                            className="text-red-600 hover:text-red-800 bg-red-50 p-2 rounded-lg transition-all duration-200"
+                          >
+                            <Trash2 size={18} />
+                          </motion.button>
+                        </PermissionWrapper>
                       </div>
                     </td>
                   </motion.tr>

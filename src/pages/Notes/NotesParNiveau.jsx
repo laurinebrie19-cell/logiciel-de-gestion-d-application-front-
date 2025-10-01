@@ -22,10 +22,19 @@ function NotesParNiveau() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [niveauxResponse, matieresResponse] = await Promise.all([
-          niveauService.getNiveaux(),
-          matiereService.getAllMatieres()
-        ]);
+        setLoading(true);
+        const matieresResponse = await matiereService.getAllMatieres();
+        
+        if (!matieresResponse) {
+          throw new Error("Aucune matière n'a été récupérée");
+        }
+        
+        setMatieres(matieresResponse);
+        
+        const niveauxResponse = await niveauService.getNiveaux();
+        if (!niveauxResponse) {
+          throw new Error("Aucun niveau n'a été récupéré");
+        }
         setNiveaux(niveauxResponse);
         setMatieres(matieresResponse);
       } catch (err) {

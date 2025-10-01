@@ -23,7 +23,7 @@ import RoleForm from "../pages/Parametrage/Roles/RoleForm.jsx";
 import Notification from "../pages/Parametrage/Notification/SettingsPage.jsx";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import ResetPassword from "../pages/Auth/ResetPassword";
-import FonctionBureauList  from "../pages/Parametrage/FonctionBureau/FonctionBureauList";
+import FonctionBureauList from "../pages/Parametrage/FonctionBureau/FonctionBureauList";
 import FonctionBureauForm from "../pages/Parametrage/FonctionBureau/FonctionBureauForm";
 import ParametrageAcademique from "../pages/Parametrage/Academique/ParametrageAcademique.jsx";
 import AnnonceManager from "../pages/Dashboard/Annonce/AnnonceManager";
@@ -85,7 +85,7 @@ const router = createBrowserRouter([
     ),
 
     children: [
-      
+
       {
         path: "dashboard",
         element: (
@@ -207,7 +207,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "admin/fonctions-bureau/edit", 
+        path: "admin/fonctions-bureau/edit",
         element: (
           <PrivateRoute permission="FONCTION_BUREAU_UPDATE">
             <FonctionBureauForm />
